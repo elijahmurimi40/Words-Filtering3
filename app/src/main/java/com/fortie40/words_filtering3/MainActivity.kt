@@ -2,25 +2,22 @@ package com.fortie40.words_filtering3
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.PorterDuff
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.fortie40.words_filtering3.adapters.MainActivityAdapter
 import com.fortie40.words_filtering3.adapters.SearchAdapter
 import com.fortie40.words_filtering3.helperclasses.HelperFunctions
+import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.get
+import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.set
+import com.fortie40.words_filtering3.interfaces.IClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-import kotlin.collections.ArrayList
-import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.set
-import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.get
-import com.fortie40.words_filtering3.interfaces.IClickListener
 
 class MainActivity : AppCompatActivity(), IClickListener {
     private lateinit var searchView: SearchView
@@ -44,27 +41,15 @@ class MainActivity : AppCompatActivity(), IClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val searchItem = menu!!.findItem(R.id.app_bar_search)
         val view = searchItem.actionView
         searchView = view as SearchView
 
-        val searchClose =
-            searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
-        searchClose.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
-
-        val searchGo =
-            searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_go_btn)
-        searchGo.setImageResource(R.drawable.ic_search_black_24dp)
-        searchGo.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
-
-        searchView.isSubmitButtonEnabled = true
         searchView.imeOptions = EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_EXTRACT_UI
         searchView.maxWidth = Integer.MAX_VALUE
         searchView.queryHint = getString(R.string.search_name)
+
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 hideNoResultsFound()
@@ -81,11 +66,18 @@ class MainActivity : AppCompatActivity(), IClickListener {
             }
         }
 
-        searchView.setOnCloseListener {
-            hideNoResultsFound()
-            names_item.adapter = mainAdapter
-            false
-        }
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                Log.i(TAG, "Opened")
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                hideNoResultsFound()
+                names_item.adapter = mainAdapter
+                return true
+            }
+        })
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -97,7 +89,8 @@ class MainActivity : AppCompatActivity(), IClickListener {
                 return false
             }
         })
-        return super.onPrepareOptionsMenu(menu)
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onBackPressed() {
