@@ -18,6 +18,7 @@ import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.set
 import com.fortie40.words_filtering3.interfaces.IClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), IClickListener {
     private lateinit var searchView: SearchView
@@ -53,22 +54,15 @@ class MainActivity : AppCompatActivity(), IClickListener {
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 hideNoResultsFound()
-                recent = getRecentSearches()
-                searchAdapter =
-                    SearchAdapter(
-                        recent,
-                        this
-                    )
+                getRecentSearches()
+                searchAdapter = SearchAdapter(recent, this)
                 names_item.adapter = searchAdapter
-                if (recent.isEmpty()) {
-                    showNoResultsFound(R.string.no_recent_search)
-                }
             }
         }
 
         searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                Log.i(TAG, "Opened")
+                getRecentSearches()
                 return true
             }
 
@@ -126,9 +120,12 @@ class MainActivity : AppCompatActivity(), IClickListener {
     }
 
     private fun searchName(p0: String?) {
+        if (p0.isNullOrEmpty()) {
+            return
+        }
         progressBar.visibility = View.VISIBLE
         names_item.visibility = View.GONE
-        saveToRecentSearch(p0!!)
+        saveToRecentSearch(p0)
         searchAdapter.originalList = names
         searchAdapter.string = p0
         searchAdapter.filter.filter(p0.toLowerCase(Locale.getDefault())) {
@@ -140,7 +137,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
                     hideNoResultsFound()
                 }
             }
-            Log.i("MainActivityA", searchAdapter.string!!)
+
             Log.i("MainActivity", p0)
             if (searchAdapter.string == "" || searchAdapter.string == p0) {
                 Log.i("MainActivity", "done")
@@ -163,12 +160,17 @@ class MainActivity : AppCompatActivity(), IClickListener {
         sharedPref[QUERY] = query
     }
 
-    private fun getRecentSearches(): ArrayList<String> {
+    private fun getRecentSearches() {
         val queries = sharedPref[QUERY, ""]?.split(",")
         val queryList = HelperFunctions.listToArrayList(queries)
         Log.i(TAG,"$queryList")
 
-        return queryList
+        recent = queryList
+        if (recent.isEmpty()) {
+            showNoResultsFound(R.string.no_recent_search)
+        } else {
+            recent.add(0, HEADER_TITLE)
+        }
     }
 
     private fun hideNoResultsFound() {

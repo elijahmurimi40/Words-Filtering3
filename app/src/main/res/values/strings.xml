@@ -12,4 +12,8 @@
     <string name="history">history</string>
     <string name="results">results</string>
     <string name="delete">delete</string>
+
+    <!-- header_layout -->
+    <string name="recent_searches">RECENT SEARCHES</string>
+    <string name="results_found">%1$d FOUND</string>
 </resources>

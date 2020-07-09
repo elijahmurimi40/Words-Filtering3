@@ -13,53 +13,63 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.fortie40.words_filtering3.HEADER
+import com.fortie40.words_filtering3.HEADER_TITLE
+import com.fortie40.words_filtering3.NAMES
 import com.fortie40.words_filtering3.R
 import com.fortie40.words_filtering3.interfaces.IClickListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SearchAdapter(names: List<String>, listener: IClickListener):
-    RecyclerView.Adapter<SearchAdapter.SearchViewHolder>(), Filterable {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
+
+    companion object {
+        private var searchString: String? = null
+
+        private fun viewInflater(parent: ViewGroup, layout: Int): View {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            return layoutInflater.inflate(layout, parent, false)
+        }
+    }
 
     var originalList: List<String> = names
-    private var mFilteredList: List<String> = names
     var string: String? = null
-    private var searchString: String? = null
+    var resultsFound: Boolean = false
+    private var mFilteredList: List<String> = names
     private val clickHandler: IClickListener = listener
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val itemView = layoutInflater.inflate(R.layout.search_layout, parent, false)
-        return SearchViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            HEADER -> HeaderViewHolder.createHeaderViewHolder(parent)
+            NAMES -> SearchViewHolder.createSearchViewHolder(parent)
+            else -> SearchViewHolder.createSearchViewHolder(parent)
+        }
     }
 
     override fun getItemCount(): Int {
         return mFilteredList.size
     }
 
-    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val name = mFilteredList[position]
-        holder.iPosition = position
-        if (string != null && string!!.isNotEmpty()) {
-            val startPos = name.toLowerCase(Locale.getDefault())
-                .indexOf(searchString!!.toLowerCase(Locale.getDefault()))
-            val endPos = startPos + searchString!!.length
-
-            if (startPos != -1) {
-                val spannable = SpannableString(name)
-                spannable.setSpan(
-                    BackgroundColorSpan(Color.YELLOW),
-                    startPos,
-                    endPos,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                holder.bind(spannable)
-            } else {
-                holder.bind(name)
-            }
+        val itemViewType = getItemViewType(position)
+        if (itemViewType == NAMES) {
+            val h = holder as SearchViewHolder
+            h.bind(name, string)
+            h.iPosition = position
         } else {
-            holder.bind(name)
+            (holder as HeaderViewHolder).bind(resultsFound, (mFilteredList.size - 1))
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (mFilteredList[position] == HEADER_TITLE) {
+            HEADER
+        } else {
+            NAMES
         }
     }
 
@@ -90,36 +100,98 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
 
         @Suppress("UNCHECKED_CAST")
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            mFilteredList = results!!.values as List<String>
+            resultsFound = true
+            val allResults = results!!.values as ArrayList<String>
+            if (allResults.size >= 1) {
+                allResults.add(0, HEADER_TITLE)
+            }
+            mFilteredList = allResults
             notifyDataSetChanged()
         }
     }
 
-    inner class SearchViewHolder(nItemView: View): RecyclerView.ViewHolder(nItemView) {
+    class HeaderViewHolder(nItemView: View): RecyclerView.ViewHolder(nItemView) {
+        companion object {
+            fun createHeaderViewHolder(parent: ViewGroup): HeaderViewHolder {
+                val itemView = viewInflater(parent, R.layout.header_layout)
+                return HeaderViewHolder(itemView)
+            }
+        }
+
+        private val header = nItemView.findViewById<TextView>(R.id.header)
+        private val divider = nItemView.findViewById<View>(R.id.divider)
+        private val results = nItemView.findViewById<TextView>(R.id.results_found)
+        private val context = itemView.context
+
+        fun bind(resultsFound: Boolean, itemCount: Int = 0) {
+            if (!resultsFound) {
+                header.text = context.getString(R.string.recent_searches)
+                results.visibility = View.GONE
+            } else {
+                val resultsString = context.getString(R.string.results)
+                results.visibility = View.VISIBLE
+                header.text = resultsString.toUpperCase(Locale.getDefault())
+                results.text = context.getString(R.string.results_found, itemCount)
+            }
+        }
+    }
+
+    class SearchViewHolder(nItemView: View): RecyclerView.ViewHolder(nItemView) {
+        companion object {
+            fun createSearchViewHolder(parent: ViewGroup): SearchViewHolder {
+                val itemView = viewInflater(parent, R.layout.search_layout)
+                return SearchViewHolder(itemView)
+            }
+        }
+
         private val history = nItemView.findViewById<ImageView>(R.id.history)
         private val results = nItemView.findViewById<TextView>(R.id.results)
         private val restore = nItemView.findViewById<ImageView>(R.id.restore)
 
         var iPosition = 0
 
-        fun bind(nameA: String) {
-            results.text = nameA
+        private fun bind(name: String) {
+            results.text = name
         }
 
-        fun bind(nameA: Spannable) {
+        private fun bind(name: Spannable) {
             history.visibility = View.GONE
             restore.visibility = View.GONE
-            results.text = nameA
+            results.setPadding(8, 0, 8, 0)
+            results.text = name
+        }
+
+        fun bind(name: String, string: String?) {
+            if (string != null) {
+                val startPos = name.toLowerCase(Locale.getDefault())
+                    .indexOf(searchString!!.toLowerCase(Locale.getDefault()))
+                val endPos = startPos + searchString!!.length
+
+                if (startPos != -1) {
+                    val spannable = SpannableString(name)
+                    spannable.setSpan(
+                        BackgroundColorSpan(Color.YELLOW),
+                        startPos,
+                        endPos,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    bind(spannable)
+                } else {
+                    bind(name)
+                }
+            } else {
+                bind(name)
+            }
         }
 
         init {
-            results.setOnClickListener {
-                clickHandler.onResultsClick(iPosition)
-            }
-
-            restore.setOnClickListener {
-                clickHandler.onRestoreClick(iPosition)
-            }
+//            results.setOnClickListener {
+//                clickHandler.onResultsClick(iPosition)
+//            }
+//
+//            restore.setOnClickListener {
+//                clickHandler.onRestoreClick(iPosition)
+//            }
         }
     }
 }
