@@ -110,7 +110,7 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
         }
     }
 
-    class HeaderViewHolder(nItemView: View): RecyclerView.ViewHolder(nItemView) {
+    class HeaderViewHolder private constructor(nItemView: View): RecyclerView.ViewHolder(nItemView) {
         companion object {
             fun createHeaderViewHolder(parent: ViewGroup): HeaderViewHolder {
                 val itemView = viewInflater(parent, R.layout.header_layout)
@@ -136,7 +136,7 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
         }
     }
 
-    class SearchViewHolder(nItemView: View): RecyclerView.ViewHolder(nItemView) {
+    class SearchViewHolder private constructor(nItemView: View): RecyclerView.ViewHolder(nItemView) {
         companion object {
             fun createSearchViewHolder(parent: ViewGroup): SearchViewHolder {
                 val itemView = viewInflater(parent, R.layout.search_layout)
