@@ -126,10 +126,9 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
         fun bind(resultsFound: Boolean, itemCount: Int = 0) {
             if (!resultsFound) {
                 header.text = context.getString(R.string.recent_searches)
-                results.visibility = View.GONE
+                results.text = ""
             } else {
                 val resultsString = context.getString(R.string.results)
-                results.visibility = View.VISIBLE
                 header.text = resultsString.toUpperCase(Locale.getDefault())
                 results.text = context.getString(R.string.results_found, itemCount)
             }
