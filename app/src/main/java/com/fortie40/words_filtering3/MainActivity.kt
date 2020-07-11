@@ -123,6 +123,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
         if (p0.isNullOrEmpty()) {
             return
         }
+        hideNoResultsFound()
         progressBar.visibility = View.VISIBLE
         names_item.visibility = View.GONE
         saveToRecentSearch(p0)
