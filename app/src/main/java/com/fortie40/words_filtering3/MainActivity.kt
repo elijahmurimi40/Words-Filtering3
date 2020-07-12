@@ -141,13 +141,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
     }
 
     private fun getNames() {
-        names = arrayListOf(
-            "Fortie40", "Java", "Kotlin", "C++", "PHP", "Javascript", "Objective-C", "Swift",
-            "Groovy", "Haskell", "JQuery", "KRYPTON", "LotusScript", "Mortran", "NewLISP", "Orwell",
-            "Hopscotch", "JScript", "AngelScript", "Bash", "Clojure", "C", "COBOL", "CSS",
-            "Cybil", "Pascal", "Perl", "Smalltalk", "SQL", "Unicon", "Ubercode", "Fortran",
-            "Hollywood", "SMALL", "Lisp", "PureScript", "R++", "XQuery", "YAML", "ZOPL"
-        )
+        names = HelperFunctions.getNames()
 
         mainAdapter =
             MainActivityAdapter(names)

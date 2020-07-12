@@ -3,8 +3,19 @@ package com.fortie40.words_filtering3.helperclasses
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import java.util.*
+import kotlin.collections.ArrayList
 
 object HelperFunctions {
+    fun getNames(): ArrayList<String> {
+        return arrayListOf(
+            "Fortie40", "Java", "Kotlin", "C++", "PHP", "Javascript", "Objective-C", "Swift",
+            "Groovy", "Haskell", "JQuery", "KRYPTON", "LotusScript", "Mortran", "NewLISP", "Orwell",
+            "Hopscotch", "JScript", "AngelScript", "Bash", "Clojure", "C", "COBOL", "CSS",
+            "Cybil", "Pascal", "Perl", "Smalltalk", "SQL", "Unicon", "Ubercode", "Fortran",
+            "Hollywood", "SMALL", "Lisp", "PureScript", "R++", "XQuery", "YAML", "ZOPL"
+        )
+    }
+
     fun listToArrayList(list: List<String>?, name: String = ""): ArrayList<String> {
         val nameToLower = name.toLowerCase(Locale.getDefault())
         val queryList = arrayListOf<String>()
