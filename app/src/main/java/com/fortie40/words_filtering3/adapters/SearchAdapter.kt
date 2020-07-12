@@ -44,8 +44,8 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER -> HeaderViewHolder.createHeaderViewHolder(parent)
-            NAMES -> SearchViewHolder.createSearchViewHolder(parent)
-            else -> SearchViewHolder.createSearchViewHolder(parent)
+            NAMES -> SearchViewHolder.createSearchViewHolder(parent, clickHandler)
+            else -> SearchViewHolder.createSearchViewHolder(parent, clickHandler)
         }
     }
 
@@ -119,7 +119,6 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
         }
 
         private val header = nItemView.findViewById<TextView>(R.id.header)
-        private val divider = nItemView.findViewById<View>(R.id.divider)
         private val results = nItemView.findViewById<TextView>(R.id.results_found)
         private val context = itemView.context
 
@@ -137,8 +136,11 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
 
     class SearchViewHolder private constructor(nItemView: View): RecyclerView.ViewHolder(nItemView) {
         companion object {
-            fun createSearchViewHolder(parent: ViewGroup): SearchViewHolder {
+            private var clickHandler: IClickListener? = null
+
+            fun createSearchViewHolder(parent: ViewGroup, clickHandler: IClickListener): SearchViewHolder {
                 val itemView = viewInflater(parent, R.layout.search_layout)
+                this.clickHandler = clickHandler
                 return SearchViewHolder(itemView)
             }
         }
@@ -184,13 +186,13 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
         }
 
         init {
-//            results.setOnClickListener {
-//                clickHandler.onResultsClick(iPosition)
-//            }
-//
-//            restore.setOnClickListener {
-//                clickHandler.onRestoreClick(iPosition)
-//            }
+            results.setOnClickListener {
+                clickHandler!!.onResultsClick(iPosition)
+            }
+
+            restore.setOnClickListener {
+                clickHandler!!.onRestoreClick(iPosition)
+            }
         }
     }
 }
