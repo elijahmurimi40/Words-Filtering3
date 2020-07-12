@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.fortie40.words_filtering3.adapters.MainActivityAdapter
@@ -18,7 +19,6 @@ import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.set
 import com.fortie40.words_filtering3.interfaces.IClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), IClickListener {
     private lateinit var searchView: SearchView
@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity(), IClickListener {
     private lateinit var names: List<String>
     private lateinit var sharedPref: SharedPreferences
     private lateinit var recent: ArrayList<String>
+    private lateinit var setFocus: MenuItem
+    private lateinit var voiceSearch: MenuItem
+    private lateinit var close: MenuItem
 
     companion object {
         private const val TAG = "MainActivity"
@@ -47,12 +50,23 @@ class MainActivity : AppCompatActivity(), IClickListener {
         val view = searchItem.actionView
         searchView = view as SearchView
 
+        setFocus = menu.findItem(R.id.set_focus)
+        voiceSearch = menu.findItem(R.id.voice_search)
+        close = menu.findItem(R.id.close)
+        val searchClose =
+            searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        searchClose.isEnabled = false
+        searchClose.setImageDrawable(null)
+
         searchView.imeOptions = EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_EXTRACT_UI
         searchView.maxWidth = Integer.MAX_VALUE
         searchView.queryHint = getString(R.string.search_name)
 
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
+                val query = searchView.query
+                hideShowVoiceIcon(query.toString())
+                setFocus.isVisible = false
                 hideNoResultsFound()
                 getRecentSearches()
                 searchAdapter = SearchAdapter(recent, this)
@@ -68,6 +82,9 @@ class MainActivity : AppCompatActivity(), IClickListener {
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 hideNoResultsFound()
+                setFocus.isVisible = false
+                voiceSearch.isVisible = false
+                close.isVisible = false
                 names_item.adapter = mainAdapter
                 return true
             }
@@ -80,6 +97,10 @@ class MainActivity : AppCompatActivity(), IClickListener {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                if (names_item.adapter == mainAdapter)
+                    return false
+                Log.i(TAG, "changed")
+                hideShowVoiceIcon(newText)
                 return false
             }
         })
@@ -123,6 +144,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
         if (p0.isNullOrEmpty()) {
             return
         }
+        setFocus.isVisible = true
         hideNoResultsFound()
         progressBar.visibility = View.VISIBLE
         names_item.visibility = View.GONE
@@ -185,5 +207,13 @@ class MainActivity : AppCompatActivity(), IClickListener {
         } else {
             no_results_found.text = getString(resource, text)
         }
+    }
+
+    private fun hideShowVoiceIcon(p0: String?) {
+        if (p0 == null) {
+            return
+        }
+        voiceSearch.isVisible = p0.isEmpty()
+        close.isVisible = p0.isNotEmpty()
     }
 }

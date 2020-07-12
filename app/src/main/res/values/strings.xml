@@ -3,7 +3,6 @@
 
     <!-- name_layout -->
     <string name="dummy_text">Dummy Text</string>
-    <string name="search">Search</string>
     <string name="search_name">Search Name</string>
     <string name="no_results_found">No Results Found for %1$s</string>
     <string name="no_recent_search">No Recent Search</string>
@@ -16,4 +15,9 @@
     <!-- header_layout -->
     <string name="recent_searches">RECENT SEARCHES</string>
     <string name="results_found">%1$d FOUND</string>
+
+    <!-- menu_main -->
+    <string name="search">Search</string>
+    <string name="voice_search">Voice Search</string>
+    <string name="close">Close</string>
 </resources>
