@@ -1,9 +1,10 @@
 package com.fortie40.words_filtering3.helperclasses
 
 import android.content.Context
+import android.content.Intent
+import android.speech.RecognizerIntent
 import android.view.inputmethod.InputMethodManager
 import java.util.*
-import kotlin.collections.ArrayList
 
 object HelperFunctions {
     fun getNames(): ArrayList<String> {
@@ -46,5 +47,14 @@ object HelperFunctions {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
                 InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
+    fun promptSpeechInput(string: String): Intent {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, string)
+
+        return intent
     }
 }

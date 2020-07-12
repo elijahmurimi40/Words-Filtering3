@@ -1,8 +1,12 @@
 package com.fortie40.words_filtering3
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +21,7 @@ import com.fortie40.words_filtering3.helperclasses.HelperFunctions
 import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.get
 import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.set
 import com.fortie40.words_filtering3.interfaces.IClickListener
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -115,11 +120,35 @@ class MainActivity : AppCompatActivity(), IClickListener {
                 HelperFunctions.showInputMethod(this)
                 true
             }
+            R.id.voice_search -> {
+                promptSpeechInput()
+                true
+            }
             R.id.close -> {
                 searchView.setQuery("", false)
                 true
             }
             else -> super.onOptionsItemSelected(item)}
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            RESULTS_SPEECH -> {
+                if (resultCode == Activity.RESULT_OK && null != data) {
+                    val result = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+
+                    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+                    if (!result[0].isNullOrEmpty()) {
+                        searchView.setQuery(result[0], true)
+                        hideShowVoiceCloseIcon()
+                        searchView.clearFocus()
+                    }
+                }
+                return
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -152,7 +181,6 @@ class MainActivity : AppCompatActivity(), IClickListener {
         if (p0.isNullOrEmpty()) {
             return
         }
-        setFocus.isVisible = true
         hideShowVoiceCloseIcon()
         hideNoResultsFound()
         progressBar.visibility = View.VISIBLE
@@ -227,7 +255,20 @@ class MainActivity : AppCompatActivity(), IClickListener {
     }
 
     private fun hideShowVoiceCloseIcon() {
+        setFocus.isVisible = true
         voiceSearch.isVisible = true
         close.isVisible = false
+    }
+
+    private fun promptSpeechInput() {
+        val string = getString(R.string.speech_prompt)
+        val intent = HelperFunctions.promptSpeechInput(string)
+
+        try {
+            startActivityForResult(intent, RESULTS_SPEECH)
+        } catch (a: ActivityNotFoundException) {
+            Snackbar.make(names_item, getString(R.string.speech_not_supported), Snackbar.LENGTH_LONG)
+                .show()
+        }
     }
 }

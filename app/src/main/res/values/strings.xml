@@ -20,4 +20,8 @@
     <string name="search">Search</string>
     <string name="voice_search">Voice Search</string>
     <string name="close">Close</string>
+
+    <!-- speech to text -->
+    <string name="speech_prompt">Say something &#8230;</string>
+    <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
 </resources>
