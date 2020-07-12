@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 val query = searchView.query
-                hideShowVoiceIcon(query.toString())
+                hideShowVoiceCloseIcon(query.toString())
                 setFocus.isVisible = false
                 hideNoResultsFound()
                 getRecentSearches()
@@ -100,12 +100,26 @@ class MainActivity : AppCompatActivity(), IClickListener {
                 if (names_item.adapter == mainAdapter)
                     return false
                 Log.i(TAG, "changed")
-                hideShowVoiceIcon(newText)
+                hideShowVoiceCloseIcon(newText)
                 return false
             }
         })
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.set_focus -> {
+                searchView.requestFocus()
+                HelperFunctions.showInputMethod(this)
+                true
+            }
+            R.id.close -> {
+                searchView.setQuery("", false)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)}
     }
 
     override fun onBackPressed() {
@@ -145,6 +159,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
             return
         }
         setFocus.isVisible = true
+        hideShowVoiceCloseIcon()
         hideNoResultsFound()
         progressBar.visibility = View.VISIBLE
         names_item.visibility = View.GONE
@@ -209,11 +224,16 @@ class MainActivity : AppCompatActivity(), IClickListener {
         }
     }
 
-    private fun hideShowVoiceIcon(p0: String?) {
+    private fun hideShowVoiceCloseIcon(p0: String?) {
         if (p0 == null) {
             return
         }
         voiceSearch.isVisible = p0.isEmpty()
         close.isVisible = p0.isNotEmpty()
+    }
+
+    private fun hideShowVoiceCloseIcon() {
+        voiceSearch.isVisible = true
+        close.isVisible = false
     }
 }
