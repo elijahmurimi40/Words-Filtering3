@@ -8,6 +8,15 @@
 
         <!-- divide color -->
         <item name="android:listDivider">@android:color/black</item>
+
+        <!-- back arrow in search view color -->
+        <item name="actionBarTheme">@style/App.ActionBarTheme</item>
+    </style>
+
+    <!-- back arrow in search view color -->
+    <style name="App.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/darkGrey</item>
+        <item name="titleTextColor">@android:color/white</item>
     </style>
 
 </resources>
