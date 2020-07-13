@@ -163,6 +163,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
 
     override fun onResultsClick(position: Int) {
         searchView.setQuery(recent[position], true)
+        searchView.clearFocus()
     }
 
     override fun onRestoreClick(position: Int) {
@@ -186,6 +187,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
         progressBar.visibility = View.VISIBLE
         names_item.visibility = View.GONE
         saveToRecentSearch(p0)
+        searchView.clearFocus()
         searchAdapter.originalList = names
         searchAdapter.string = p0
         searchAdapter.filter.filter(p0.toLowerCase(Locale.getDefault())) {
