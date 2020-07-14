@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewAnimationUtils
+import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import com.fortie40.words_filtering3.R
 import com.fortie40.words_filtering3.helperclasses.HelperFunctions
@@ -18,6 +19,7 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
 
         open_search_button.setOnClickListener { openSearch() }
         close_search_button.setOnClickListener { closeSearch() }
+        search_input_text.setOnEditorActionListener { _, actionId, _ -> doneKeyPress(actionId)}
     }
 
     private lateinit var circularAnim: Animator
@@ -58,5 +60,13 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
             circularAnim.duration = 300
             circularAnim.start()
         }
+    }
+
+    private fun doneKeyPress(actionId: Int): Boolean {
+        if (actionId == EditorInfo.IME_ACTION_GO) {
+            search_input_text.clearFocus()
+            HelperFunctions.hideInputMethod(context, search_input_text)
+        }
+        return false
     }
 }
