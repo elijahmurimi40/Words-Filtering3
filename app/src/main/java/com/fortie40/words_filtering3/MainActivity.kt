@@ -22,7 +22,7 @@ import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.get
 import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.set
 import com.fortie40.words_filtering3.interfaces.IClickListener
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(), IClickListener {
