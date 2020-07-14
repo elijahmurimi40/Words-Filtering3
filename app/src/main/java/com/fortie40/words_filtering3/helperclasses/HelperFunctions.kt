@@ -3,6 +3,7 @@ package com.fortie40.words_filtering3.helperclasses
 import android.content.Context
 import android.content.Intent
 import android.speech.RecognizerIntent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import java.util.*
 
@@ -47,6 +48,12 @@ object HelperFunctions {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
                 InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
+    fun hideInputMethod(context: Context, view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
+                InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     fun promptSpeechInput(string: String): Intent {

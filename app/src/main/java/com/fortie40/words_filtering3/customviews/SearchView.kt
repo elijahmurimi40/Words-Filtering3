@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.FrameLayout
 import com.fortie40.words_filtering3.R
+import com.fortie40.words_filtering3.helperclasses.HelperFunctions
 import kotlinx.android.synthetic.main.view_search.view.*
 
 class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
@@ -27,9 +28,11 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
         search_open_view.visibility = View.VISIBLE
         searchViewCircularAnimation(0f, width.toFloat())
         search_input_text.requestFocus()
+        HelperFunctions.showInputMethod(context)
     }
 
     private fun closeSearch() {
+        HelperFunctions.hideInputMethod(context, search_input_text)
         searchViewCircularAnimation(width.toFloat(), 0f)
 
         circularAnim.addListener(object : Animator.AnimatorListener {
