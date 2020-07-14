@@ -52,6 +52,26 @@
             android:layout_marginLeft="16dp"
             android:background="@drawable/ic_baseline_arrow_back_24" />
 
+        <EditText
+            android:id="@+id/search_input_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toEndOf="@id/close_search_button"
+            android:layout_toRightOf="@id/close_search_button"
+            android:layout_toStartOf="@id/set_focus"
+            android:layout_toLeftOf="@id/set_focus"
+            android:hint="@string/search_name"
+            android:textColorHint="@android:color/darker_gray"
+            android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:inputType="text"
+            android:imeOptions="actionGo|flagNoExtractUi"
+            android:background="@android:color/transparent"/>
+
         <View
             android:id="@+id/set_focus"
             android:layout_width="24dp"

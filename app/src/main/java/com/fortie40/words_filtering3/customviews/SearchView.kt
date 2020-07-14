@@ -22,8 +22,11 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
     private lateinit var circularAnim: Animator
 
     private fun openSearch() {
+        set_focus.visibility = View.GONE
+        search_input_text.setText("")
         search_open_view.visibility = View.VISIBLE
         searchViewCircularAnimation(0f, width.toFloat())
+        search_input_text.requestFocus()
     }
 
     private fun closeSearch() {
@@ -35,6 +38,8 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
             override fun onAnimationStart(animation: Animator?) = Unit
             override fun onAnimationEnd(animation: Animator?) {
                 search_open_view.visibility = View.INVISIBLE
+                search_input_text.setText("")
+                circularAnim.removeAllListeners()
             }
         })
     }
