@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <com.fortie40.words_filtering3.customviews.SearchView
+        <com.fortie40.words_filtering3.customviews.FortieSearchView
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@color/colorPrimary"

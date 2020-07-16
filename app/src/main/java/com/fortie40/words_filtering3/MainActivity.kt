@@ -17,15 +17,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.fortie40.words_filtering3.adapters.MainActivityAdapter
 import com.fortie40.words_filtering3.adapters.SearchAdapter
+import com.fortie40.words_filtering3.customviews.FortieSearchView
 import com.fortie40.words_filtering3.helperclasses.HelperFunctions
 import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.get
 import com.fortie40.words_filtering3.helperclasses.PreferenceHelper.set
 import com.fortie40.words_filtering3.interfaces.IClickListener
+import com.fortie40.words_filtering3.interfaces.ISearchViewListener
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.*
 
-class MainActivity : AppCompatActivity(), IClickListener {
+class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     private lateinit var searchView: SearchView
     private lateinit var mainAdapter: MainActivityAdapter
     private lateinit var searchAdapter: SearchAdapter
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity(), IClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        FortieSearchView.setListener(this)
 
         sharedPref = getPreferences(Context.MODE_PRIVATE)
         getNames()

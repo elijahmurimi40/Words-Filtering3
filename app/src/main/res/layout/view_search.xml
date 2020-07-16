@@ -81,6 +81,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:visibility="gone"
             android:background="@drawable/ic_search_24" />
 
         <View
