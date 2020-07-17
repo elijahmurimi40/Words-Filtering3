@@ -16,13 +16,11 @@ interface ISearchViewListener {
         viewToReveal.visibility = View.VISIBLE
         searchViewCircularAnimation(viewToReveal, startView, 0f, width)
         inputText.requestFocus()
-        HelperFunctions.showInputMethod(inputText.context)
     }
 
     fun onCloseSearchView(
         inputText: EditText, viewToReveal: View, startView: View, width: Float
     ) {
-        HelperFunctions.hideInputMethod(inputText.context, inputText)
         val circularAnim =
             searchViewCircularAnimation(viewToReveal, startView, width, 0f)
 

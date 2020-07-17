@@ -11,7 +11,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -37,6 +40,8 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     private lateinit var setFocus: MenuItem
     private lateinit var voiceSearch: MenuItem
     private lateinit var close: MenuItem
+    private lateinit var moveUp: Animation
+    private lateinit var moveDown: Animation
 
     companion object {
         private const val TAG = "MainActivity"
@@ -49,6 +54,9 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
 
         sharedPref = getPreferences(Context.MODE_PRIVATE)
         getNames()
+
+        moveUp = AnimationUtils.loadAnimation(this, R.anim.move_up)
+        moveDown = AnimationUtils.loadAnimation(this, R.anim.move_down)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -165,8 +173,9 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     }
 
     override fun onResultsClick(position: Int) {
-        searchView.setQuery(recent[position], true)
+        //searchView.setQuery(recent[position], true)
         searchView.clearFocus()
+        println("clicked")
     }
 
     override fun onRestoreClick(position: Int) {
@@ -275,5 +284,52 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
             Snackbar.make(names_item, getString(R.string.speech_not_supported), Snackbar.LENGTH_LONG)
                 .show()
         }
+    }
+
+    override fun onOpenSearchView(
+        inputText: EditText,
+        viewToReveal: View,
+        startView: View,
+        width: Float
+    ) {
+        super.onOpenSearchView(inputText, viewToReveal, startView, width)
+        showSearchAdapter(inputText)
+    }
+
+    override fun onCloseSearchView(
+        inputText: EditText,
+        viewToReveal: View,
+        startView: View,
+        width: Float
+    ) {
+        super.onCloseSearchView(inputText, viewToReveal, startView, width)
+        HelperFunctions.hideInputMethod(inputText.context, inputText)
+        search_item.startAnimation(moveDown)
+        moveDown.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) = Unit
+            override fun onAnimationStart(animation: Animation?) {
+                HelperFunctions.hideInputMethod(inputText.context, inputText)
+            }
+            override fun onAnimationEnd(animation: Animation?) {
+                search_item.clearAnimation()
+                search_item.visibility = View.GONE
+            }
+        })
+    }
+
+    private fun showSearchAdapter(inputText: EditText) {
+        search_item.clearAnimation()
+        getRecentSearches()
+        searchAdapter = SearchAdapter(recent, this)
+        search_item.visibility = View.VISIBLE
+        search_item.adapter = searchAdapter
+        search_item.startAnimation(moveUp)
+        moveUp.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) = Unit
+            override fun onAnimationStart(animation: Animation?) = Unit
+            override fun onAnimationEnd(animation: Animation?) {
+                HelperFunctions.showInputMethod(inputText.context)
+            }
+        })
     }
 }
