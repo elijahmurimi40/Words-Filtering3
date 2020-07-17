@@ -2,9 +2,12 @@ package com.fortie40.words_filtering3.helperclasses
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import java.util.*
 
 object HelperFunctions {
@@ -63,5 +66,11 @@ object HelperFunctions {
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, string)
 
         return intent
+    }
+
+    fun changeStatusBarColor(context: AppCompatActivity, color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            context.window.statusBarColor = ContextCompat.getColor(context, color)
+        }
     }
 }

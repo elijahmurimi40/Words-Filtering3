@@ -303,21 +303,11 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         width: Float
     ) {
         super.onCloseSearchView(inputText, viewToReveal, startView, width)
-        HelperFunctions.hideInputMethod(inputText.context, inputText)
-        search_item.startAnimation(moveDown)
-        moveDown.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) = Unit
-            override fun onAnimationStart(animation: Animation?) {
-                HelperFunctions.hideInputMethod(inputText.context, inputText)
-            }
-            override fun onAnimationEnd(animation: Animation?) {
-                search_item.clearAnimation()
-                search_item.visibility = View.GONE
-            }
-        })
+        closeSearchView(inputText)
     }
 
     private fun showSearchAdapter(inputText: EditText) {
+        HelperFunctions.changeStatusBarColor(this, R.color.black)
         search_item.clearAnimation()
         getRecentSearches()
         searchAdapter = SearchAdapter(recent, this)
@@ -329,6 +319,21 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
             override fun onAnimationStart(animation: Animation?) = Unit
             override fun onAnimationEnd(animation: Animation?) {
                 HelperFunctions.showInputMethod(inputText.context)
+            }
+        })
+    }
+
+    private fun closeSearchView(inputText: EditText) {
+        HelperFunctions.changeStatusBarColor(this, R.color.colorPrimaryDark)
+        search_item.startAnimation(moveDown)
+        moveDown.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) = Unit
+            override fun onAnimationStart(animation: Animation?) {
+                HelperFunctions.hideInputMethod(inputText.context, inputText)
+            }
+            override fun onAnimationEnd(animation: Animation?) {
+                search_item.clearAnimation()
+                search_item.visibility = View.GONE
             }
         })
     }
