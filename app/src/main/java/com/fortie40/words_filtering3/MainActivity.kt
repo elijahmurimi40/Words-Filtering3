@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     private lateinit var recent: ArrayList<String>
     private lateinit var moveUp: Animation
     private lateinit var moveDown: Animation
+    private var history: ArrayList<String>? = null
 
     companion object {
         private const val TAG = "MainActivity"
@@ -104,6 +105,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         width: Float
     ) {
         super.onOpenSearchView(inputText, viewToReveal, startView, width)
+        history = arrayListOf()
         showSearchAdapter(inputText)
     }
 
@@ -135,6 +137,28 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         return super.onSubmitQuery(actionId, view)
     }
 
+    override fun onBackPressed() {
+        val length = history?.size
+        if (length != null) {
+            when {
+                length >= 1 -> {
+                    search_input_text.setText(history!![length - 1])
+                    hideShowVoiceCloseIcon()
+                    history!!.removeAt(length - 1)
+                }
+                length == 0 -> {
+                    onCloseSearchView(search_input_text,
+                        search_open_view,
+                        open_search_button,
+                        search_open_view.width.toFloat())
+                    history = null
+                }
+            }
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun getNames() {
         names = HelperFunctions.getNames()
 
@@ -156,6 +180,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         saveToRecentSearch(p0)
         searchAdapter.originalList = names
         searchAdapter.string = p0
+        history!!.add(p0)
         searchAdapter.filter.filter(p0.toLowerCase(Locale.getDefault())) {
             when(searchAdapter.itemCount) {
                 0 -> {
