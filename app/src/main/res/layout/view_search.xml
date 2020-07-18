@@ -39,7 +39,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="@android:color/white"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
         <View
             android:id="@+id/close_search_button"

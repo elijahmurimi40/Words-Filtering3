@@ -46,6 +46,8 @@ class FortieSearchView(context: Context, attrs: AttributeSet) : FrameLayout(cont
         set_focus.setOnClickListener { setFocus() }
 
         close.setOnClickListener { close() }
+
+        voice_search.setOnClickListener { listener!!.onPromptSpeechInput() }
     }
 
     companion object {

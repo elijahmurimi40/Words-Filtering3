@@ -58,6 +58,8 @@ interface ISearchViewListener {
         close.isVisible = p0.isNotEmpty()
     }
 
+    fun onPromptSpeechInput() {}
+
     private fun searchViewCircularAnimation(
         viewToReveal: View, startView: View, startRad: Float, endRad: Float
     ): Animator {

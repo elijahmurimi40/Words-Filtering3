@@ -38,7 +38,7 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
     var originalList: List<String> = names
     var string: String? = null
     var resultsFound: Boolean = false
-    var mFilteredList: List<String> = names
+    private var mFilteredList: List<String> = names
     private val clickHandler: IClickListener = listener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

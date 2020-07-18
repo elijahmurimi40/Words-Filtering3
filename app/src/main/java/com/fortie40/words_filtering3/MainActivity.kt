@@ -126,24 +126,6 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.set_focus -> {
-                searchView.requestFocus()
-                HelperFunctions.showInputMethod(this)
-                true
-            }
-            R.id.voice_search -> {
-                promptSpeechInput()
-                true
-            }
-            R.id.close -> {
-                searchView.setQuery("", false)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)}
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -154,9 +136,9 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
 
                     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
                     if (!result[0].isNullOrEmpty()) {
-                        searchView.setQuery(result[0], true)
-                        hideShowVoiceCloseIcon()
-                        searchView.clearFocus()
+                        search_input_text.setText(result[0])
+                        search_open_view.requestFocus()
+                        searchName(result[0])
                     }
                 }
                 return
@@ -196,7 +178,10 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         if (p0.isNullOrEmpty()) {
             return
         }
-        searchAdapter.mFilteredList = arrayListOf()
+        HelperFunctions.hideInputMethod(this, search_input_text)
+        searchAdapter = SearchAdapter(arrayListOf(), this)
+        search_item.adapter = searchAdapter
+        hideShowVoiceCloseIcon()
         hideNoResultsFound()
         progressBar.visibility = View.VISIBLE
         saveToRecentSearch(p0)
@@ -273,14 +258,15 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         close.isVisible = false
     }
 
-    private fun promptSpeechInput() {
+    override fun onPromptSpeechInput() {
+        HelperFunctions.hideInputMethod(this, search_input_text)
         val string = getString(R.string.speech_prompt)
         val intent = HelperFunctions.promptSpeechInput(string)
 
         try {
             startActivityForResult(intent, RESULTS_SPEECH)
         } catch (a: ActivityNotFoundException) {
-            Snackbar.make(names_item, getString(R.string.speech_not_supported), Snackbar.LENGTH_LONG)
+            Snackbar.make(search_item, getString(R.string.speech_not_supported), Snackbar.LENGTH_LONG)
                 .show()
         }
     }
@@ -319,7 +305,6 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
 
     override fun onSubmitQuery(actionId: Int, view: EditText): Boolean {
         val query = view.text.toString()
-        hideShowVoiceCloseIcon()
         searchName(query)
         return super.onSubmitQuery(actionId, view)
     }
