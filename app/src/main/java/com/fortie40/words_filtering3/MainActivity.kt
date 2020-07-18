@@ -73,11 +73,15 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     }
 
     override fun onResultsClick(position: Int) {
-        println("clicked")
+        search_input_text.setText(recent[position])
+        search_open_view.requestFocus()
+        searchName(recent[position])
     }
 
     override fun onRestoreClick(position: Int) {
-        println("clicked")
+        search_input_text.setText(recent[position])
+        search_input_text.requestFocus()
+        search_input_text.setSelection(search_input_text.text.length)
     }
 
     override fun onPromptSpeechInput() {
