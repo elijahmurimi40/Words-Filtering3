@@ -6,8 +6,8 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.core.view.isVisible
 import com.fortie40.words_filtering3.R
+import com.fortie40.words_filtering3.helperclasses.HelperFunctions
 import com.fortie40.words_filtering3.interfaces.ISearchViewListener
 import kotlinx.android.synthetic.main.view_search.view.*
 
@@ -39,7 +39,13 @@ class FortieSearchView(context: Context, attrs: AttributeSet) : FrameLayout(cont
 
         search_input_text.addTextChangedListener(textWatcher())
 
-        search_input_text.setOnFocusChangeListener { _, hasFocus -> focusChange(hasFocus) }
+        search_input_text.setOnFocusChangeListener { _, hasFocus ->
+            listener!!.onFocusChange(hasFocus, search_input_text.text.toString(), voice_search, close)
+        }
+
+        set_focus.setOnClickListener { setFocus() }
+
+        close.setOnClickListener { close() }
     }
 
     companion object {
@@ -54,25 +60,17 @@ class FortieSearchView(context: Context, attrs: AttributeSet) : FrameLayout(cont
             override fun afterTextChanged(s: Editable?) = Unit
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                hideShowVoiceCloseIcon(s.toString())
+                listener!!.hideShowVoiceCloseIcon(s.toString(), voice_search, close)
             }
         }
     }
 
-    private fun focusChange(hasFocus: Boolean) {
-        if (hasFocus)
-            hideShowVoiceCloseIcon(search_input_text.text.toString())
+    private fun setFocus() {
+        search_input_text.requestFocus()
+        HelperFunctions.showInputMethod(context)
     }
 
-    private fun hideShowVoiceCloseIcon(p0: String?) {
-        if (p0 == null)
-            return
-
-        voice_search.isVisible = p0.isEmpty()
-        close.isVisible = p0.isNotEmpty()
-    }
-
-    inner class GetFortieSearchView {
-
+    private fun close() {
+        search_input_text.setText("")
     }
 }

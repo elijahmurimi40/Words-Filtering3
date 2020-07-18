@@ -24,7 +24,7 @@
         android:visible="false" />
 
     <item
-        android:id="@+id/close"
+        android:id="@+id/closee"
         android:icon="@drawable/ic_baseline_close_24"
         android:title="@string/close"
         app:showAsAction="always"

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import androidx.core.view.isVisible
 import com.fortie40.words_filtering3.helperclasses.HelperFunctions
 
 interface ISearchViewListener {
@@ -36,12 +37,25 @@ interface ISearchViewListener {
         })
     }
 
-    fun onSubmitQuery(actionId: Int, view: View): Boolean {
+    fun onSubmitQuery(actionId: Int, view: EditText): Boolean {
         if (actionId == EditorInfo.IME_ACTION_GO) {
             view.clearFocus()
             HelperFunctions.hideInputMethod(view.context, view)
         }
         return false
+    }
+
+    fun onFocusChange(hasFocus: Boolean, string: String, voice: View, close: View) {
+        if (hasFocus)
+            hideShowVoiceCloseIcon(string, voice, close)
+    }
+
+    fun hideShowVoiceCloseIcon(p0: String?, voice: View, close: View) {
+        if (p0 == null)
+            return
+
+        voice.isVisible = p0.isEmpty()
+        close.isVisible = p0.isNotEmpty()
     }
 
     private fun searchViewCircularAnimation(

@@ -18,6 +18,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import com.fortie40.words_filtering3.adapters.MainActivityAdapter
 import com.fortie40.words_filtering3.adapters.SearchAdapter
 import com.fortie40.words_filtering3.customviews.FortieSearchView
@@ -28,6 +29,7 @@ import com.fortie40.words_filtering3.interfaces.IClickListener
 import com.fortie40.words_filtering3.interfaces.ISearchViewListener
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.view_search.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     private lateinit var recent: ArrayList<String>
     private lateinit var setFocus: MenuItem
     private lateinit var voiceSearch: MenuItem
-    private lateinit var close: MenuItem
+    private lateinit var closee: MenuItem
     private lateinit var moveUp: Animation
     private lateinit var moveDown: Animation
 
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
 
         setFocus = menu.findItem(R.id.set_focus)
         voiceSearch = menu.findItem(R.id.voice_search)
-        close = menu.findItem(R.id.close)
+        closee = menu.findItem(R.id.closee)
         val searchClose =
             searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
         searchClose.isEnabled = false
@@ -194,12 +196,10 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         if (p0.isNullOrEmpty()) {
             return
         }
-        //hideShowVoiceCloseIcon()
+        searchAdapter.mFilteredList = arrayListOf()
         hideNoResultsFound()
-        //progressBar.visibility = View.VISIBLE
-        //names_item.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
         saveToRecentSearch(p0)
-        //searchView.clearFocus()
         searchAdapter.originalList = names
         searchAdapter.string = p0
         searchAdapter.filter.filter(p0.toLowerCase(Locale.getDefault())) {
@@ -216,7 +216,6 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
             if (searchAdapter.string == "" || searchAdapter.string == p0) {
                 Log.i("MainActivity", "done")
                 progressBar.visibility = View.GONE
-                names_item.visibility = View.VISIBLE
                 searchView.clearFocus()
             }
         }
@@ -269,8 +268,8 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     }
 
     private fun hideShowVoiceCloseIcon() {
-        setFocus.isVisible = true
-        voiceSearch.isVisible = true
+        set_focus.isVisible = true
+        voice_search.isVisible = true
         close.isVisible = false
     }
 
@@ -306,13 +305,30 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         closeSearchView(inputText)
     }
 
+    override fun onFocusChange(hasFocus: Boolean, string: String, voice: View, close: View) {
+        super.onFocusChange(hasFocus, string, voice, close)
+        if (hasFocus) {
+            set_focus.isVisible = false
+            hideNoResultsFound()
+            getRecentSearches()
+            searchAdapter = SearchAdapter(recent, this)
+            search_item.adapter = searchAdapter
+        }
+
+    }
+
+    override fun onSubmitQuery(actionId: Int, view: EditText): Boolean {
+        val query = view.text.toString()
+        hideShowVoiceCloseIcon()
+        searchName(query)
+        return super.onSubmitQuery(actionId, view)
+    }
+
     private fun showSearchAdapter(inputText: EditText) {
         HelperFunctions.changeStatusBarColor(this, R.color.black)
         search_item.clearAnimation()
         getRecentSearches()
-        searchAdapter = SearchAdapter(recent, this)
         search_item.visibility = View.VISIBLE
-        search_item.adapter = searchAdapter
         search_item.startAnimation(moveUp)
         moveUp.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) = Unit
@@ -324,6 +340,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     }
 
     private fun closeSearchView(inputText: EditText) {
+        hideNoResultsFound()
         HelperFunctions.changeStatusBarColor(this, R.color.colorPrimaryDark)
         search_item.startAnimation(moveDown)
         moveDown.setAnimationListener(object : Animation.AnimationListener {
