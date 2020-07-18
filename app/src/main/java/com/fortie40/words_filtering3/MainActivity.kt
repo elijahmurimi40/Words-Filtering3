@@ -194,12 +194,12 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         if (p0.isNullOrEmpty()) {
             return
         }
-        hideShowVoiceCloseIcon()
+        //hideShowVoiceCloseIcon()
         hideNoResultsFound()
-        progressBar.visibility = View.VISIBLE
-        names_item.visibility = View.GONE
+        //progressBar.visibility = View.VISIBLE
+        //names_item.visibility = View.GONE
         saveToRecentSearch(p0)
-        searchView.clearFocus()
+        //searchView.clearFocus()
         searchAdapter.originalList = names
         searchAdapter.string = p0
         searchAdapter.filter.filter(p0.toLowerCase(Locale.getDefault())) {

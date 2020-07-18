@@ -104,7 +104,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:background="@drawable/ic_baseline_close_24"/>
     </RelativeLayout>
 </FrameLayout>
