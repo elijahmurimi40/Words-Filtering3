@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
 
         if (save) {
             saveToRecentSearch(p0)
-            history!!.add(p0)
+            addToHistory(p0)
         }
 
         HelperFunctions.hideInputMethod(this, search_input_text)
@@ -290,5 +290,13 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
                 search_item.visibility = View.GONE
             }
         })
+    }
+
+    private fun addToHistory(p0: String) {
+        if (history!!.contains(p0)) {
+            history!!.remove(p0)
+        }
+
+        history!!.add(p0)
     }
 }
