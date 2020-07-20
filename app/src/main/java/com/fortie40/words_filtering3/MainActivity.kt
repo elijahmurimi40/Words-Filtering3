@@ -35,7 +35,10 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     private lateinit var recent: ArrayList<String>
     private lateinit var moveUp: Animation
     private lateinit var moveDown: Animation
+
     private var history: ArrayList<String>? = null
+    private var onBackPressed = true
+    private var save = false
 
     companion object {
         private const val TAG = "MainActivity"
@@ -65,6 +68,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
                     if (!result[0].isNullOrEmpty()) {
                         search_input_text.setText(result[0])
                         search_open_view.requestFocus()
+                        save = true
                         searchName(result[0])
                     }
                 }
@@ -76,6 +80,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     override fun onResultsClick(position: Int) {
         search_input_text.setText(recent[position])
         search_open_view.requestFocus()
+        save = true
         searchName(recent[position])
     }
 
@@ -106,6 +111,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     ) {
         super.onOpenSearchView(inputText, viewToReveal, startView, width)
         history = arrayListOf()
+        onBackPressed = true
         showSearchAdapter(inputText)
     }
 
@@ -133,16 +139,24 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
 
     override fun onSubmitQuery(actionId: Int, view: EditText): Boolean {
         val query = view.text.toString()
+        save = true
         searchName(query)
         return super.onSubmitQuery(actionId, view)
     }
 
     override fun onBackPressed() {
+        if (history != null && onBackPressed && history!!.size > 0) {
+            onBackPressed = false
+            history!!.removeAt(history!!.size - 1)
+        }
+
         val length = history?.size
         if (length != null) {
             when {
                 length >= 1 -> {
+                    save = false
                     search_input_text.setText(history!![length - 1])
+                    searchName(history!![length - 1])
                     hideShowVoiceCloseIcon()
                     history!!.removeAt(length - 1)
                 }
@@ -171,16 +185,20 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         if (p0.isNullOrEmpty()) {
             return
         }
+
+        if (save) {
+            saveToRecentSearch(p0)
+            history!!.add(p0)
+        }
+
         HelperFunctions.hideInputMethod(this, search_input_text)
         searchAdapter = SearchAdapter(arrayListOf(), this)
         search_item.adapter = searchAdapter
         hideShowVoiceCloseIcon()
         hideNoResultsFound()
         progressBar.visibility = View.VISIBLE
-        saveToRecentSearch(p0)
         searchAdapter.originalList = names
         searchAdapter.string = p0
-        history!!.add(p0)
         searchAdapter.filter.filter(p0.toLowerCase(Locale.getDefault())) {
             when(searchAdapter.itemCount) {
                 0 -> {
