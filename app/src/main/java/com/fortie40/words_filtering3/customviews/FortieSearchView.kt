@@ -63,6 +63,7 @@ class FortieSearchView(context: Context, attrs: AttributeSet) : FrameLayout(cont
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 listener!!.hideShowVoiceCloseIcon(s.toString(), voice_search, close)
+                listener!!.onTextChanged(s.toString())
             }
         }
     }

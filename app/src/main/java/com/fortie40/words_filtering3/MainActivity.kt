@@ -130,9 +130,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         if (hasFocus) {
             set_focus.isVisible = false
             hideNoResultsFound()
-            getRecentSearches()
-            searchAdapter = SearchAdapter(recent, this)
-            search_item.adapter = searchAdapter
+            onTextChanged(string)
         }
 
     }
@@ -142,6 +140,17 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         save = true
         searchName(query)
         return super.onSubmitQuery(actionId, view)
+    }
+
+    override fun onTextChanged(p0: String) {
+        super.onTextChanged(p0)
+        if (p0.isNotEmpty()) {
+            val r = arrayListOf("kdf")
+            setUpSearchAdapter(r)
+        } else {
+            getRecentSearches()
+            setUpSearchAdapter(recent)
+        }
     }
 
     override fun onBackPressed() {
@@ -181,6 +190,11 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         names_item.adapter = mainAdapter
     }
 
+    private fun setUpSearchAdapter(list: List<String>) {
+        searchAdapter = SearchAdapter(list, this)
+        search_item.adapter = searchAdapter
+    }
+
     private fun searchName(p0: String?) {
         if (p0.isNullOrEmpty()) {
             return
@@ -192,8 +206,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
         }
 
         HelperFunctions.hideInputMethod(this, search_input_text)
-        searchAdapter = SearchAdapter(arrayListOf(), this)
-        search_item.adapter = searchAdapter
+        setUpSearchAdapter(arrayListOf())
         hideShowVoiceCloseIcon()
         hideNoResultsFound()
         progressBar.visibility = View.VISIBLE
@@ -264,7 +277,6 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     private fun showSearchAdapter(inputText: EditText) {
         HelperFunctions.changeStatusBarColor(this, R.color.black)
         search_item.clearAnimation()
-        getRecentSearches()
         search_item.visibility = View.VISIBLE
         search_item.startAnimation(moveUp)
         moveUp.setAnimationListener(object : Animation.AnimationListener {
