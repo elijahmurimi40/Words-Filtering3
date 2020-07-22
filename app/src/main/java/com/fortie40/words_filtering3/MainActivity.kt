@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     override fun onTextChanged(p0: String) {
         super.onTextChanged(p0)
         if (p0.isNotEmpty()) {
-            val r = arrayListOf("kdf")
+            val r = arrayListOf("suggestions", "suggestions", "suggestions")
             setUpSearchAdapter(r)
         } else {
             getRecentSearches()
