@@ -15,6 +15,7 @@ Minimum Android Version 4.0 (Ice Cream Sandwich)
 	Used Kotlin coroutines delay function to simulate long running search
 
 ### Demos
+#### SearchView animation and Speech to text
 <img 
 	src="demo/demo1.gif" 
 	alt="Demo" height="500px" hspace="20" />
@@ -22,6 +23,8 @@ Minimum Android Version 4.0 (Ice Cream Sandwich)
 	src="demo/demo2.gif" 
 	alt="Demo" height="500px" hspace="20" />
 	
+	
+#### Filtering and Going through search history onBackpressed
 <img 
 	src="demo/demo3.gif" 
 	alt="Demo" height="500px" hspace="20" />
