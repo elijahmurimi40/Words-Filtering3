@@ -85,8 +85,11 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
                 originalList
             } else {
                 delay(2000)
+                val pattern = charString.trim().replace(".".toRegex(), "$0.*")
+                val regex = ".*$pattern".toRegex()
+
                 val filteredList = originalList
-                    .filter { it.toLowerCase(Locale.getDefault()).contains(charString) }
+                    .filter { it.toLowerCase(Locale.getDefault()).matches(regex) }
                     .toMutableList()
                 Log.i("adapter", "********")
                 Log.i("adapter", "filtered")
@@ -164,18 +167,21 @@ class SearchAdapter(names: List<String>, listener: IClickListener):
 
         fun bind(name: String, string: String?) {
             if (string != null) {
-                val startPos = name.toLowerCase(Locale.getDefault())
-                    .indexOf(searchString!!.toLowerCase(Locale.getDefault()))
-                val endPos = startPos + searchString!!.length
-
-                if (startPos != -1) {
-                    val spannable = SpannableString(name)
+                val spannable = SpannableString(name)
+                var startPos = 0
+                searchString!!.forEach {
+                    startPos = name.toLowerCase(Locale.getDefault())
+                        .indexOf(it.toLowerCase())
+                    val endPos = startPos + 1
                     spannable.setSpan(
                         BackgroundColorSpan(Color.YELLOW),
                         startPos,
                         endPos,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
+                }
+
+                if (startPos != -1) {
                     bind(spannable)
                 } else {
                     bind(name)
