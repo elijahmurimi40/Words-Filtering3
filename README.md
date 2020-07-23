@@ -1,9 +1,30 @@
+<p align="center"><img 
+	src="demo/logo.png" 
+	alt="Logo" width="40px" height="40px" /></p>
+  
 # Words-Filtering3
 Final episode of words filtering in SearchView. Previously on Words-Filtering:grin::stuck_out_tongue_closed_eyes:
 
 [Words-Filtering-SearchView-Kotlin](https://github.com/fortie40/Words-Filtering-SearchView-Kotlin)
 
 [Words-Filtering2](https://github.com/fortie40/Words-Filtering2)
+
+Minimum Android Version 4.0 (Ice Cream Sandwich)
+
+#### PS
+	Used Kotlin coroutines delay function to simulate long running search
+
+### Demos
+<img 
+	src="demo/demo1.gif" 
+	alt="Demo" height="500px" hspace="20" />
+<img 
+	src="demo/demo2.gif" 
+	alt="Demo" height="500px" hspace="20" />
+	
+<img 
+	src="demo/demo3.gif" 
+	alt="Demo" height="500px" hspace="20" />
 
 ## License
 
