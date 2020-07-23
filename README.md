@@ -5,7 +5,7 @@ Final episode of words filtering in SearchView. Previously on Words-Filtering:gr
 
 [Words-Filtering2](https://github.com/fortie40/Words-Filtering2)
 
-License
+## License
 
 MIT License
 
