@@ -123,6 +123,7 @@ class MainActivity : AppCompatActivity(), IClickListener, ISearchViewListener {
     ) {
         super.onCloseSearchView(inputText, viewToReveal, startView, width)
         closeSearchView(inputText)
+        history = null
     }
 
     override fun onFocusChange(hasFocus: Boolean, string: String, voice: View, close: View) {
